@@ -1,26 +1,30 @@
 var webpack = require('webpack');
-module.exports = {  
-  entry: [
-    "./js/index.js"
-  ],
-  output: {
-    path: __dirname + '/static',
-    filename: "bundle.js"
-  },
-  module: {
-    loaders: [
-      {
-        test: /\.js?$/,
-        loader: 'babel-loader',
-        query: {
-          presets: ['es2015', 'react']
-        },
-        exclude: /node_modules/
-      }
-    ]
-  },
-  plugins: [
-  ],
+var path = require('path');
+var BundleTracker = require('webpack-bundle-tracker');
+
+module.exports = {
+	mode: 'development',
+	context: __dirname,
+	entry: './js/index',
+	output: {
+		path: path.resolve('./static'),
+		filename: "bundle.js",
+	},
+	plugins: [
+		new BundleTracker({filename: './webpack-stats.json'}),
+	],
+	module: {
+		rules: [
+			{
+				test: /\.js$/,
+				exclude: /node_modules/,
+				loader: 'babel-loader',
+				query: {
+					presets: ['react', 'es2015']
+				}
+			}
+		]
+	},
 	resolve: {
 		extensions: ['*', '.js', '.jsx']
 	}

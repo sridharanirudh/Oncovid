@@ -131,3 +131,4 @@ dmypy.json
 # JS Stuff
 package-lock.json
 node_modules/
+static/
