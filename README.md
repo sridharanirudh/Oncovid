@@ -12,6 +12,7 @@ Install NPM and Node (version 8 or higher) from either [here](https://docs.npmjs
 Installing Webpack
 ```shell
 npm install -g webpack
+npm install -g webpack-cli
 ```
 
 ```shell
@@ -21,4 +22,5 @@ npm install
 ### To run the app
 ```shell
 python app.py
+webpack --watch
 ```
