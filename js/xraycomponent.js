@@ -2,6 +2,8 @@ import React from 'react'
 import axios from 'axios'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
+import Alert from 'react-bootstrap/Alert'
+import Loader from 'react-loader'
 
 class XRayComponent extends React.Component {
 	constructor(props) {
@@ -22,10 +24,12 @@ class XRayComponent extends React.Component {
 	}
 	handleSubmit(event) {
 		const { file } = this.state
+		this.setState({loading: true})
 		event.preventDefault()
 		this.fileUpload(file)
 			.then(res => {
 				console.log(res)
+				this.setState({loading: false, result: parseFloat(res.data.result)})
 			})
 			.catch(res => {
 				console.log(res)
@@ -35,40 +39,56 @@ class XRayComponent extends React.Component {
 		console.log(event.target.files)
 		this.setState({file: event.target.files[0]})
 	}
-	render() {
-		const { loading, file } = this.state
-		console.log(file)
-		if (loading) {
-			return <div> LOADING </div>
+	showResult() {
+		const { result } = this.state
+		let variant, message
+		if (result < 0.3) {
+			variant = 'success'
+			message = 'There is a very low chance you have COVID-19'
+		} else if (variant >= 0.3 && variant <= 0.7) {
+			variant = 'warning'
+			message = 'You might have COVID-19'
 		} else {
-			return <div>
-				<div className="banner-heading">
-					<h1 className="ppt-orange">
-						X-Ray Analysis
-					</h1>
-					<h3>
-						Platform to improve workflow for patients & physicians augmented with recommendation systems.
-					</h3>
-				</div>
-				<div className="row justify-content-md-center file-input">
-						<div className="col-md-4">
-							<Form onSubmit={this.handleSubmit}>
-									<Form.File 
-										id="file"
-										label={file ? file.name : "Please select a file"}
-										custom
-										onChange={this.handleUpload}
-									/>
-									<Button variant="primary" type="submit">
-										Submit
-									</Button>
-							</Form>
-						</div>
-				</div>
-				<div className="row justify-content-md-center file-input">
-				</div>
-			</div>
+			variant = 'danger'
+			message = 'There is a high chance you have COVID-19. Please contact a health care professional.'
 		}
+		return <div className="row justify-content-md-center file-input">
+			<div className="banner-heading">
+				<Alert variant={variant}>
+					{message}
+				</Alert>
+			</div>
+		</div>
+	}
+	render() {
+		const { loading, file, result } = this.state
+		return <div>
+			{ loading && <Loader /> }
+			<div className="banner-heading">
+				<h1 className="ppt-orange">
+					X-Ray Analysis
+				</h1>
+				<h3>
+					Platform to improve workflow for patients & physicians augmented with recommendation systems.
+				</h3>
+			</div>
+			<div className="row justify-content-md-center file-input">
+					<div className="col-md-4">
+						<Form onSubmit={this.handleSubmit}>
+								<Form.File 
+									id="file"
+									label={file ? file.name : "Please select a file"}
+									custom
+									onChange={this.handleUpload}
+								/>
+								<Button variant="primary" type="submit">
+									Submit
+								</Button>
+						</Form>
+					</div>
+			</div>
+			{ result && this.showResult() }
+		</div>
 	}
 }
 
