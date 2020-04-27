@@ -22,8 +22,9 @@ def upload_and_predict():
 
 @app.route("/predict", methods=["POST"])
 def predict():
-    metaname =  "/Users/saurabh7/Downloads/model.meta"
-    ckptname = "/Users/saurabh7/Downloads/model-8485"
+    image = request.args.get('image')
+    metaname =  "model.meta"
+    ckptname = "model-8485"
     import numpy as np
     import tensorflow.compat.v1 as tf
     import os, argparse
@@ -52,7 +53,7 @@ def predict():
     image_tensor = graph.get_tensor_by_name("input_1:0")
     pred_tensor = graph.get_tensor_by_name("dense_3/Softmax:0")
     # forward to processing page
-    x = cv2.imread("/Users/saurabh7/Downloads/xray1.jpeg")
+    x = cv2.imread(image)
     h, w, c = x.shape
     x = x[int(h/6):, :]
     x = cv2.resize(x, (224, 224))
@@ -62,7 +63,7 @@ def predict():
     return jsonify(
         prediction=str(pred[:,2][0])
     )
-    
+
 @app.route('/')
 @app.route('/xray')
 def index():
