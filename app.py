@@ -1,11 +1,22 @@
 import os
 from flask import Flask, render_template, request, jsonify
 from werkzeug.utils import secure_filename
-app = Flask(__name__)
+from flask_pymongo import PyMongo
 
+
+app = Flask(__name__)
+app.config["MONGO_URI"] = "mongodb://localhost:27017/covid_net"
 app.config['UPLOAD_FOLDER'] = 'uploads'
+
+mongo = PyMongo(app)
 IMAGE_FOLDER = 'images'
 
+
+@app.route("/chat", methods=["POST"])
+def chat():
+    data = request.get_json()
+    mongo.db.chat.insert_one(data)
+    return jsonify({'message':'Inserted Response'}), 200
 
 @app.route("/api/upload_and_predict", methods=["POST"])
 def upload_and_predict():
