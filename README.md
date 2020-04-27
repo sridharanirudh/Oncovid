@@ -24,3 +24,8 @@ npm install
 python app.py
 webpack --watch
 ```
+
+
+### Install MongoDB and PyMongo
+
+https://docs.mongodb.com/manual/tutorial/install-mongodb-on-os-x/
