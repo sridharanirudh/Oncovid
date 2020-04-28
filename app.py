@@ -2,6 +2,10 @@ import os
 from flask import Flask, render_template, request, jsonify
 from werkzeug.utils import secure_filename
 from flask_pymongo import PyMongo
+import numpy as np
+import tensorflow.compat.v1 as tf
+import cv2
+import pdb
 
 
 app = Flask(__name__)
@@ -11,12 +15,12 @@ app.config['UPLOAD_FOLDER'] = 'uploads'
 mongo = PyMongo(app)
 IMAGE_FOLDER = 'images'
 
-
 @app.route("/chat", methods=["POST"])
 def chat():
     data = request.get_json()
     mongo.db.chat.insert_one(data)
     return jsonify({'message':'Inserted Response'}), 200
+
 
 @app.route("/api/upload_and_predict", methods=["POST"])
 def upload_and_predict():
@@ -28,28 +32,18 @@ def upload_and_predict():
                     exist_ok=True)
         fname = secure_filename(f.filename)
         f.save(os.path.join(app.config['UPLOAD_FOLDER'], IMAGE_FOLDER, fname))
-        return jsonify({'message': 'File uploaded successfully'}), 200
+        result = predict(os.path.join(app.config['UPLOAD_FOLDER'], IMAGE_FOLDER, fname))
+        return jsonify({
+            'message': 'File uploaded successfully',
+            'result': result
+        }), 200
     return jsonify({'message': 'An error occurred'}), 422
 
-@app.route("/predict", methods=["POST"])
-def predict():
-    image = request.args.get('image')
-    metaname =  "model.meta"
+
+def predict(filename):
+    metaname = "model.meta"
     ckptname = "model-8485"
-    import numpy as np
-    import tensorflow.compat.v1 as tf
-    import os, argparse
-    import cv2
     tf.disable_eager_execution()
-
-
-    # parser = argparse.ArgumentParser(description='COVID-Net Inference')
-    # parser.add_argument('--weightspath', default='models/COVIDNet-CXR-Large', type=str, help='Path to output folder')
-    # parser.add_argument('--metaname', default='model.meta', type=str, help='Name of ckpt meta file')
-    # parser.add_argument('--ckptname', default='model-8485', type=str, help='Name of model ckpts')
-    # parser.add_argument('--imagepath', default='assets/ex-covid.jpeg', type=str, help='Full path to image to be inferenced')
-
-    # args = parser.parse_args()
 
     mapping = {'normal': 0, 'pneumonia': 1, 'COVID-19': 2}
     inv_mapping = {0: 'normal', 1: 'pneumonia', 2: 'COVID-19'}
@@ -64,22 +58,20 @@ def predict():
     image_tensor = graph.get_tensor_by_name("input_1:0")
     pred_tensor = graph.get_tensor_by_name("dense_3/Softmax:0")
     # forward to processing page
-    x = cv2.imread(image)
+    x = cv2.imread(filename)
     h, w, c = x.shape
     x = x[int(h/6):, :]
     x = cv2.resize(x, (224, 224))
     x = x.astype('float32') / 255.0
-    pred = sess.run(pred_tensor, feed_dict={image_tensor: np.expand_dims(x, axis=0)})
+    pred = sess.run(pred_tensor,
+                    feed_dict={image_tensor: np.expand_dims(x, axis=0)})
 
-    return jsonify(
-        prediction=str(pred[:,2][0])
-    )
+    return str(pred[:, 2][0])
 
 @app.route('/')
 @app.route('/xray')
 def index():
     return render_template('index.html')
-
 
 if __name__ == "__main__":
     app.run()
