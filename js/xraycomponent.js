@@ -42,12 +42,9 @@ class XRayComponent extends React.Component {
 	showResult() {
 		const { result } = this.state
 		let variant, message
-		if (result < 0.3) {
+		if (result < 0.9) {
 			variant = 'success'
-			message = 'There is a very low chance you have COVID-19'
-		} else if (variant >= 0.3 && variant <= 0.7) {
-			variant = 'warning'
-			message = 'You might have COVID-19'
+			message = 'There is a low chance you have COVID-19'
 		} else {
 			variant = 'danger'
 			message = 'There is a high chance you have COVID-19. Please contact a health care professional.'
@@ -69,7 +66,7 @@ class XRayComponent extends React.Component {
 					X-Ray Analysis
 				</h1>
 				<h3>
-					Platform to improve workflow for patients & physicians augmented with recommendation systems.
+					Upload you Chest X-Ray and get a likelihood of infection based on our Machine Learning model.
 				</h3>
 			</div>
 			<div className="row justify-content-md-center file-input">
