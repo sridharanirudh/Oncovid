@@ -70,6 +70,7 @@ def predict(filename):
 
 @app.route('/')
 @app.route('/xray')
+@app.route('/questionnare')
 def index():
     return render_template('index.html')
 

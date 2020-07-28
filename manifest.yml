@@ -1,0 +1,7 @@
+---
+applications:
+ - name: covid-net
+   random-route: true
+   memory: 256M
+   buildpack: python_buildpack
+   disk_quota: 1024M
