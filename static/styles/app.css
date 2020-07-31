@@ -8,12 +8,13 @@ body {
 	background-image: url(/static/img/bck.jpg);
 	background-repeat: no-repeat;
 	background-size: cover;
+	padding: 100px;
 }
 
 .banner-heading {
 	margin-top: 5rem;
 	font-family: lsFont;
-	text-align: center;
+	text-align: left;
 }
 
 .banner-heading > h1 {
@@ -29,8 +30,9 @@ body {
 }
 
 .home-buttons {
-	text-align: center;
+	text-align: left;
 	margin-top: 3.5rem;
+	float: left;
 }
 
 .file-input {
