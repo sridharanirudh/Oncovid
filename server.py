@@ -25,6 +25,8 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField
 from wtforms.validators import DataRequired, InputRequired, Email, Length
 from werkzeug.security import check_password_hash, generate_password_hash
+from hashlib import sha256
+
 db = MongoEngine()
 
 
@@ -48,6 +50,11 @@ app.config['SECRET_KEY'] = 'oncovid'
 class RegForm(FlaskForm):
     email = StringField('email',  validators=[InputRequired(), Email(message='Invalid email'), Length(max=30)])
     password = PasswordField('password', validators=[InputRequired(), Length(min=8, max=20)])
+
+class AppointmentForm(FlaskForm):
+    patient_id = StringField('Patient ID',  validators=[InputRequired(), Length(max=30)])
+    date = StringField('Date', validators=[InputRequired(), Length(min=3, max=20)])
+
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -195,6 +202,18 @@ def homepage():
 @app.route('/questionnare')
 @app.route('/questionnare/form')
 @app.route('/scheduler')
+
+
+
+@app.route('/appointment', methods=['GET', 'POST'])
+def appointment():
+    APform = AppointmentForm()
+    if request.method == 'POST':
+
+        appointment_id = sha256((form.patient_id + form.date).encode()).hexdigest()
+        return redirect(url_for('dashboard'))
+
+    return render_template('appointment.html', form=APform)
 
 def index():
     return render_template('index.html')
