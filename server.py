@@ -34,7 +34,7 @@ app = Flask(__name__)
 host = os.getenv('Hosts')
 dbpath = os.getenv('Path')
 print(host, db)
-app.config["MONGO_URI"] = str(host) + '/' + str(dbpath)
+app.config["MONGO_URI"] = 'mongodb://127.0.0.1:27017/Oncovid' #str(host) + '/' + str(dbpath)
 # app.config['UPLOAD_FOLDER'] = 'uploads'
 port = int(os.getenv('PORT', 8000))
 mongo = PyMongo(app)
@@ -203,6 +203,11 @@ def homepage():
 @app.route('/questionnare/form')
 @app.route('/scheduler')
 
+
+
+@app.route('/calendar', methods=['GET'])
+def view_calendar():
+    return render_template('calendar.html')
 
 
 @app.route('/appointment', methods=['GET', 'POST'])
