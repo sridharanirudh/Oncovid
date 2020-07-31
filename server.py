@@ -45,6 +45,7 @@ app.config['MONGODB_SETTINGS'] = {
     'host': '127.0.0.1',
     'port': 27017
 }
+
 app.config['SECRET_KEY'] = 'oncovid'
 
 class RegForm(FlaskForm):
@@ -53,7 +54,10 @@ class RegForm(FlaskForm):
 
 class AppointmentForm(FlaskForm):
     patient_id = StringField('Patient ID',  validators=[InputRequired(), Length(max=30)])
+
     date = StringField('Date', validators=[InputRequired(), Length(min=3, max=20)])
+
+    state = StringField('State', validators=[InputRequired(), Length(min=3, max=20)])
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -138,8 +142,8 @@ for i in range(9):
     calendars.append(ReplDict())
 
 all_nodes = {}
-appointment_types = ['group_1', 'group_2', 'group_3']
-
+appointment_types = ['NY', 'MA', 'PA']
+clusters = {}
 
 j=0
 for appointment_type in appointment_types:
@@ -155,19 +159,24 @@ for appointment_type in appointment_types:
     j+=10
     nodes_2
     all_nodes[appointment_type] = nodes_2
+clusters['NY'] = Cluster(all_nodes['NY'], replicas=2)
+clusters['MA'] = Cluster(all_nodes['MA'], replicas=2)
+clusters['PA'] = Cluster(all_nodes['PA'], replicas=2)
 
+print(all_nodes)
     
 objs = []
 objs_2 = []
 objs_3 = []
 for i in range(9):
     objs.append(
-        SyncObj(selfNode=all_nodes['group_1'][str(i)]['address'], otherNodes=[all_nodes['group_2'][str(i+10)]['address'], all_nodes['group_3'][str(i+20)]['address']], consumers=[calendars[i]]))
+        SyncObj(selfNode=all_nodes['NY'][str(i)]['address'], otherNodes=[all_nodes['MA'][str(i+10)]['address'], all_nodes['PA'][str(i+20)]['address']], consumers=[calendars[i]]))
     objs_2.append(
-        SyncObj(selfNode=all_nodes['group_2'][str(i+10)]['address'], otherNodes=[all_nodes['group_1'][str(i)]['address'], all_nodes['group_3'][str(i+20)]['address']], consumers=[calendars[i]]))
+        SyncObj(selfNode=all_nodes['MA'][str(i+10)]['address'], otherNodes=[all_nodes['NY'][str(i)]['address'], all_nodes['PA'][str(i+20)]['address']], consumers=[calendars[i]]))
     
     objs_3.append(
-        SyncObj(selfNode=all_nodes['group_3'][str(i+20)]['address'], otherNodes=[all_nodes['group_1'][str(i)]['address'], all_nodes['group_2'][str(i+10)]['address']], consumers=[calendars[i]]))
+        SyncObj(selfNode=all_nodes['PA'][str(i+20)]['address'], otherNodes=[all_nodes['MA'][str(i+10)]['address'], all_nodes['NY'][str(i)]['address']], consumers=[calendars[i]]))
+
 
 @app.route("/api/create_event", methods=["POST"])
 def book_appointment(appoint_ment_json):
@@ -198,6 +207,7 @@ def create_event():
 def homepage():
     return  render_template('index.html')
 
+
 @app.route('/SurvivorshipPlanForm')
 @app.route('/questionnare')
 @app.route('/questionnare/form')
@@ -210,7 +220,16 @@ def appointment():
     APform = AppointmentForm()
     if request.method == 'POST':
 
-        appointment_id = sha256((form.patient_id + form.date).encode()).hexdigest()
+        appointment_id = sha256((APform.patient_id.data + APform.date.data).encode()).hexdigest()
+        nodes = clusters[APform.state.data].find_nodes(appointment_id)
+
+        for node in nodes:
+            if APform.date.data in calendars[int(node)].keys():
+                continue
+            else:
+                calendars[int(node)][APform.date.data] = appointment_id
+                break
+        
         return redirect(url_for('dashboard'))
 
     return render_template('appointment.html', form=APform)

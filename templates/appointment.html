@@ -23,10 +23,16 @@ Book appointment for Survivorship plan.
 </h1>
 </div>
 <form action="/appointment" method="post">
+
   <p>Patient ID</p>
   {{ form.patient_id }}
+
   <p>Date</p>
   {{ form.date }}
+
+ <p>State</p>
+  {{ form.state }}
+
   <br>
   <br>
   <input type="submit" value="Book">

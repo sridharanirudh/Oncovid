@@ -12,6 +12,9 @@
   integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
   crossorigin="anonymous"
 />
+<script src="https://unpkg.com/react-router/umd/react-router.min.js"></script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
 <script
   src="https://unpkg.com/react-bootstrap@next/dist/react-bootstrap.min.js"
   crossorigin></script>
@@ -20,6 +23,7 @@
     <div id="mydiv"></div>
 
     <script type="text/babel">
+
       class Hello extends React.Component {
         render() {
           return <div>
@@ -43,24 +47,12 @@
       <div className="home-buttons">
         <div className="row justify-content-md-center">
           <div className="col-md-auto">
-            <ReactRouterDOM.BrowserRouter>
-            <ReactRouterDOM.Link to="/questionnare">
-              <ReactBootstrap.Button>
-                View Calendar
-              </ReactBootstrap.Button>
-            </ReactRouterDOM.Link>
-                      </ReactRouterDOM.BrowserRouter>
+          	<a href="/appointment" class="btn btn-primary">View Plan</a>
 
           </div>
           <div className="col-md-auto">
-                        <ReactRouterDOM.BrowserRouter>
 
-            <ReactRouterDOM.Link to="/SurvivorshipPlanForm">
-              <ReactBootstrap.Button variant="primary">
-                Create a Plan
-              </ReactBootstrap.Button>
-            </ReactRouterDOM.Link>
-                        </ReactRouterDOM.BrowserRouter>
+          	<a href="/appointment" class="btn btn-primary">Book appointment</a>
 
           </div>
         </div>
