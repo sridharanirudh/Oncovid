@@ -1,35 +1,20 @@
 <html>
-	<script src="https://unpkg.com/react@16/umd/react.production.min.js"></script>
-	<script src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script>
-	<script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
-	<script src="https://unpkg.com/react-router-dom/umd/react-router-dom.min.js"></script>
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
-
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 	<head>
 		<link rel="stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/app.css') }}">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+		<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+		<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+
 	</head>
-	<link
-	rel="stylesheet"
- href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
- integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
- crossorigin="anonymous"
- />
-	<script
- src="https://unpkg.com/react-bootstrap@next/dist/react-bootstrap.min.js"
- crossorigin></script>
 	<body>
 		<nav class="navbar navbar-expand-lg navbar-light bg-light">
-			<a class="navbar-brand" href="/">OnCovid</a>
+			<a class="navbar-brand" href="/">
+				<img src="static/img/oncovid.png" width="100px"/></a>
 			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 				<span class="navbar-toggler-icon"></span>
 			</button>
-
 			<div class="collapse navbar-collapse" id="navbarSupportedContent">
 				<ul class="navbar-nav navbar-right mr-auto">
 					<li class="nav-item">
@@ -39,31 +24,37 @@
 						<a class="nav-link" href="/appointment">Book Appointment</a>
 					</li>
 					<li class="nav-item">
+						<a class="nav-link" href="/about">About</a>
+					</li>
+					<li class="nav-item">
 						<a class="nav-link" href="/logout">Logout</a>
 					</li>
 				</ul>
 			</div>
 		</nav>
-		<div class="banner-heading">
+		<div class="banner-heading apt-h1">
 			<h1 className="ppt-orange">
 				Book an appointment for the survivorship plan.
 			</h1>
 		</div>
-		<form action="/appointment" method="post">
+		<div class="apt-form">
+			<form action="/appointment" method="post">
+				<div class="form-group">
+					<label for="patient_id">Patient ID:</label>
+					<input id="patient_id" class="form-control" name="patient_id" required type="text" value={{appointment_details['patient_id']}} />
+				</div>
+				<div class="form-group">
+					<label for="date">Date</label>
+					<input id="date" name="date" class="form-control" required type="datetime-local"  value={{appointment_details['date']}} />
+				</div>
 
-			<p>Patient ID</p>
-			<input id="patient_id" name="patient_id" required type="text" value={{appointment_details['patient_id']}} />
-
-			<p>Date</p>
-			<input id="date" name="date" required type="datetime-local"  value={{appointment_details['date']}} />
-
-			<p>State</p>
-			<input id="state" name="state" required type="text"  value={{appointment_details['state']}} />
-
-			<br>
-			<br>
-			<input type="submit" value="Book">
-		</form>
+				<div class="form-group">
+					<label for="state">State</label>
+					<input id="state" name="state" class="form-control" required type="text"  value={{appointment_details['state']}} />
+				</div>
+				<input type="submit" value="Book">
+			</form>
+		</div>
 
 	</body>
 </html>

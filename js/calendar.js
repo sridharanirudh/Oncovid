@@ -3,6 +3,7 @@ import { Calendar, Views, momentLocalizer } from 'react-big-calendar'
 import moment from 'moment'
 import 'react-big-calendar/lib/css/react-big-calendar.css'
 import axios from 'axios'
+import { withRouter } from 'react-router-dom'
 
 const localizer = momentLocalizer(moment)
 
@@ -53,7 +54,8 @@ class CalendarComponent extends React.Component {
 			})
 	}
 	onSelectEvent(e) {
-		console.log(e)
+		const { history } = this.props
+		history.push(`/appointment?appointment_id=${e._id}`)
 	}
 	render() {
 		const { events } = this.state
@@ -64,13 +66,13 @@ class CalendarComponent extends React.Component {
 				step={15}
 				timeslots={8}
 				localizer={localizer}
-				defaultView={Views.WEEK}
+				defaultView={Views.MONTH}
 				defaultDate={new Date()}
 				onSelectEvent={this.onSelectEvent}
-				style={{ height: 500 }}
+				style={{ height: 700 }}
 			/>
 		</div>
 	}
 }
 
-export default CalendarComponent
+export default withRouter(CalendarComponent)
