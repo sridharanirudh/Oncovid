@@ -25,13 +25,13 @@ Book appointment for Survivorship plan.
 <form action="/appointment" method="post">
 
   <p>Patient ID</p>
-  {{ form.patient_id }}
+  <input id="patient_id" name="patient_id" required type="text" value={{appointment_details['patient_id']}} />
 
   <p>Date</p>
-  {{ form.date }}
+  <input id="date" name="date" required type="datetime-local"  value={{appointment_details['date']}} />
 
  <p>State</p>
-  {{ form.state }}
+  <input id="state" name="state" required type="text"  value={{appointment_details['state']}} />
 
   <br>
   <br>

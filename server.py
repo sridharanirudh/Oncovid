@@ -26,6 +26,7 @@ from wtforms import StringField, PasswordField
 from wtforms.validators import DataRequired, InputRequired, Email, Length
 from werkzeug.security import check_password_hash, generate_password_hash
 from hashlib import sha256
+import pdb
 
 db = MongoEngine()
 
@@ -178,6 +179,9 @@ for i in range(9):
         SyncObj(selfNode=all_nodes['PA'][str(i+20)]['address'], otherNodes=[all_nodes['MA'][str(i+10)]['address'], all_nodes['NY'][str(i)]['address']], consumers=[calendars[i]]))
 
 
+appointments = []
+# aptid -> []
+
 @app.route("/api/create_event", methods=["POST"])
 def book_appointment(appoint_ment_json):
     nodes = cluster.find_nodes(appointment_id)
@@ -187,8 +191,6 @@ def book_appointment(appoint_ment_json):
             continue
         else:
             calendars[int(node)][date] = appointment_id
-
-    
 
 def get_calendar(name):
     neighbor = rendezvous.find_node('Hospital1')
@@ -219,13 +221,21 @@ def homepage():
 def view_calendar():
     return render_template('calendar.html')
 
+@app.route('/get_appointments', methods=['GET'])
+def get_appointments():
+    return jsonify(appointments)
 
 @app.route('/appointment', methods=['GET', 'POST'])
 def appointment():
     APform = AppointmentForm()
     if request.method == 'POST':
+        a_pid = APform.patient_id.data
+        a_zone = APform.state.data
+        a_date = APform.date.data
+
 
         appointment_id = sha256((APform.patient_id.data + APform.date.data).encode()).hexdigest()
+        appointments.append([appointment_id, a_pid, a_date, a_zone])
         nodes = clusters[APform.state.data].find_nodes(appointment_id)
 
         for node in nodes:
@@ -235,9 +245,26 @@ def appointment():
                 calendars[int(node)][APform.date.data] = appointment_id
                 break
         
-        return redirect(url_for('dashboard'))
-
-    return render_template('appointment.html', form=APform)
+        return redirect(url_for('view_calendar'))
+    else:
+        appointment_id = request.args.get('appointment_id')
+        appointment_details = {
+            'patient_id': '',
+            'date': '',
+            'state': ''
+        }
+        if appointment_id:
+            for apt_id, a_pid, a_date, a_zone in appointments:
+                if apt_id == appointment_id:
+                    appointment_details = {
+                        'patient_id': a_pid,
+                        'date': a_date,
+                        'state': a_zone
+                    }
+                    break
+        print(appointment_details)
+        return render_template('appointment.html', form=APform,
+                               appointment_details=appointment_details)
 
 def index():
     return render_template('index.html')

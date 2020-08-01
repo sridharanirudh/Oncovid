@@ -5,6 +5,10 @@
   <script src="https://unpkg.com/react-router-dom/umd/react-router-dom.min.js"></script>
  <head>
   <link rel="stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/app.css') }}">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 </head>
 <link
   rel="stylesheet"
@@ -19,6 +23,19 @@
   src="https://unpkg.com/react-bootstrap@next/dist/react-bootstrap.min.js"
   crossorigin></script>
   <body>
+	  <nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#">WebSiteName</a>
+    </div>
+    <ul class="nav navbar-nav">
+      <li class="active"><a href="#">Home</a></li>
+      <li><a href="#">Page 1</a></li>
+      <li><a href="#">Page 2</a></li>
+      <li><a href="#">Page 3</a></li>
+    </ul>
+  </div>
+</nav>
   
     <div id="mydiv"></div>
 
@@ -47,7 +64,7 @@
       <div className="home-buttons">
         <div className="row justify-content-md-center">
           <div className="col-md-auto">
-          	<a href="/appointment" class="btn btn-primary">View Plan</a>
+          	<a href="/calendar" class="btn btn-primary">View Plan</a>
 
           </div>
           <div className="col-md-auto">
