@@ -64,3 +64,23 @@ body {
 	margin-left: 8rem;
 	margin-top: 6rem;
 }
+
+.image-about {
+	margin-top: 5rem;
+}
+
+.about-h4 {
+	text-align: center;
+	padding-right: 335px;
+	padding-left: 250;
+	margin-top: 6rem;
+	font-size: 18pt;
+}
+
+.img-logo {
+	width: 10rem;
+}
+
+.p-in {
+	font-size: 1.8rem;
+}
